@@ -1,0 +1,161 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Oddberry World 🍓</title>
+<style>
+*{box-sizing:border-box}
+:root{--pink:#ff9ecb;--purple:#d8c7ff;--mint:#baf4dd;--ink:#493653}
+body{margin:0;font-family:Trebuchet MS,system-ui,sans-serif;color:var(--ink);background:linear-gradient(135deg,#fff0f7,#f1edff,#e9fff5);min-height:100vh}
+header{padding:20px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;max-width:1100px;margin:auto}
+.logo{font-size:27px;font-weight:1000}.coins{background:white;padding:10px 16px;border-radius:25px;font-weight:bold;border:2px solid #ffe0ef}
+main{max-width:1100px;margin:auto;padding:10px 20px 40px}
+.hero,.panel{background:#ffffffdf;border:2px solid white;border-radius:25px;padding:22px;box-shadow:0 10px 30px #694c7212}
+.hero{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:20px}
+h1{font-size:clamp(35px,6vw,65px);line-height:1;margin:12px 0;letter-spacing:-2px}
+h1 span{color:#e866a4}
+p{line-height:1.6;color:#796983}
+.heroart{text-align:center;font-size:100px;background:linear-gradient(135deg,#fff1bf,#ffe1ef);border-radius:22px;padding:25px}
+h2{margin-top:30px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}
+label{display:block;font-size:13px;font-weight:bold;margin:14px 0 6px}
+input,select{width:100%;padding:12px;border:2px solid #f0d9e9;border-radius:12px;background:white;color:var(--ink);font:inherit}
+button{border:0;border-radius:13px;padding:11px 15px;background:var(--ink);color:white;font-weight:bold;font:inherit;cursor:pointer;margin:4px 3px 4px 0}
+button:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.pink{background:#ed73ac}.mint{background:#48b993}.soft{background:white;color:var(--ink);border:2px solid #eeddeb}
+.preview{margin-top:12px;min-height:165px;border-radius:20px;display:grid;place-items:center;background:#ffeaf5;font-size:75px;position:relative}
+.previewname{position:absolute;bottom:9px;font-size:15px;font-weight:bold;background:white;padding:7px 13px;border-radius:20px}
+.colors{display:flex;gap:10px;margin:12px 0}
+.swatch{width:35px;height:35px;border-radius:50%;border:3px solid white;outline:2px solid #e6d4e8;padding:0}
+.swatch.selected{outline:3px solid var(--ink)}
+.quest{display:flex;align-items:center;gap:8px;background:white;border:1px solid #f0deed;padding:10px;border-radius:13px;margin:8px 0;font-size:14px}
+.quest span{flex:1}
+.island{height:270px;position:relative;overflow:hidden;border-radius:20px;border:3px solid white;background:linear-gradient(#bcecff 0 43%,#a4e9c1 43%)}
+.island:after{content:"";position:absolute;bottom:-90px;left:-10%;width:120%;height:210px;background:#78d49c;border-radius:50%}
+.islanditem{position:absolute;z-index:2;font-size:32px}
+.islandpal{position:absolute;z-index:3;left:44%;top:42%;font-size:60px}
+.shop{display:flex;flex-wrap:wrap;gap:5px}
+.shop button{background:white;color:var(--ink);border:2px solid #f1deeb;font-size:23px;padding:8px}
+.stickers{display:flex;gap:10px;flex-wrap:wrap}
+.sticker{background:#fff2c9;border:2px dashed #e6cb78;padding:9px;border-radius:14px;font-size:25px}
+.locked{filter:grayscale(1);opacity:.35}
+footer{text-align:center;padding:30px 0;color:#96839c;font-size:13px}
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:white;padding:13px 18px;border-radius:14px;display:none;z-index:5;max-width:90%;text-align:center}
+@media(max-width:750px){.hero{grid-template-columns:1fr}.heroart{grid-row:1}.grid{grid-template-columns:1fr}header{padding:15px}main{padding:10px 13px 30px}}
+</style>
+</head>
+<body>
+<header>
+ <div class="logo">🍓 Oddberry <span style="color:#df6ba7">World</span><div style="font-size:11px;letter-spacing:2px">A TINY WORLD OF BIG WEIRDNESS</div></div>
+ <div class="coins">🪙 <span id="coins">6</span> Berry Coins</div>
+</header>
+<main>
+ <section class="hero">
+  <div><p>✦ WELCOME, LITTLE EXPLORER ✦</p><h1>Your own tiny<br><span>odd little world.</span></h1><p>Meet a magical Oddling, make a cozy island, finish quests and collect cute stickers. There's no wrong way to be weird here! ♡</p><button class="pink" onclick="document.getElementById('make').scrollIntoView({behavior:'smooth'})">Let's explore! ↓</button></div>
+  <div class="heroart">🌈<br>🍄 🌷</div>
+ </section>
+
+ <h2 id="make">🧸 Meet your Oddling</h2>
+ <p>Create a tiny creature that's completely you.</p>
+ <section class="grid">
+  <div class="panel">
+   <h3>✍️ Customize your pal</h3>
+   <label for="name">ODDLING NAME</label>
+   <input id="name" maxlength="18" value="Mochi Moon">
+   <label for="type">CREATURE TYPE</label>
+   <select id="type">
+    <option value="🐰">Bunbun 🐰</option><option value="🐱">Mewberry 🐱</option><option value="🐸">Frogglet 🐸</option><option value="🦊">Foxlet 🦊</option><option value="🐻">Berribear 🐻</option><option value="👾">Glitchling 👾</option><option value="🦄">Sprinklehorn 🦄</option>
+   </select>
+   <label>COLOUR AURA</label>
+   <div class="colors">
+    <button class="swatch selected" style="background:#ff9ecb" data-color="#ff9ecb" aria-label="Pink"></button>
+    <button class="swatch" style="background:#c5adff" data-color="#c5adff" aria-label="Lilac"></button>
+    <button class="swatch" style="background:#9ee9c9" data-color="#9ee9c9" aria-label="Mint"></button>
+    <button class="swatch" style="background:#ffe28a" data-color="#ffe28a" aria-label="Yellow"></button>
+    <button class="swatch" style="background:#9edfff" data-color="#9edfff" aria-label="Blue"></button>
+   </div>
+   <button class="pink" id="savepal">✨ Meet my Oddling!</button>
+  </div>
+  <div class="panel">
+   <h3>💖 Your little pal</h3>
+   <div class="preview" id="preview"><span id="emoji">🐰</span><span class="previewname" id="pname">Mochi Moon</span></div>
+   <p id="description">A curious little friend with a big imagination.</p>
+  </div>
+  <div class="panel">
+   <h3>🧭 Tiny quests</h3><p>Complete quests to earn Berry Coins and stickers!</p>
+   <div id="quests"></div>
+  </div>
+ </section>
+
+ <h2>🏝️ Your Oddberry Island</h2>
+ <p>Decorate your own magical little patch of weirdness.</p>
+ <section class="grid" style="grid-template-columns:1.3fr 1fr">
+  <div class="panel">
+   <div class="island" id="island"><div style="position:absolute;top:15px;left:20px;font-size:35px">☁️</div><div style="position:absolute;top:35px;right:25px;font-size:32px">☁️</div><div id="items"></div><div class="islandpal" id="islandpal">🐰</div></div>
+   <p>Tap decorations to add them to your island!</p>
+   <button class="soft" id="clear">Clear decorations</button>
+  </div>
+  <div class="panel">
+   <h3>🌼 Decoration shop</h3><p>Each decoration costs 2 Berry Coins.</p>
+   <div class="shop" id="shop"></div>
+   <p id="shopmsg">Choose a decoration to get started.</p>
+  </div>
+ </section>
+
+ <h2>🎀 Sticker collection</h2>
+ <section class="panel"><div class="stickers" id="stickers"></div><p>Keep playing to unlock more stickers!</p></section>
+ <footer>Made with ♡, berries & a suspicious amount of glitter.<br>Oddberry World · Your progress saves in this browser.</footer>
+</main>
+<div id="toast" role="status"></div>
+<script>
+const KEY='oddberrySaveV1';
+const initial={name:'Mochi Moon',type:'🐰',color:'#ff9ecb',coins:6,decor:[],done:[],stickers:['🍓']};
+let s;
+try{s={...initial,...JSON.parse(localStorage.getItem(KEY)||'{}')}}catch(e){s={...initial}}
+const $=id=>document.getElementById(id);
+const questData=[
+ {id:'name',emoji:'✍️',title:'Name your Oddling',desc:'Save your creature name.',coins:3},
+ {id:'decorate',emoji:'🌷',title:'Make it cozy',desc:'Add your first decoration.',coins:4},
+ {id:'explore',emoji:'🔎',title:'Look around',desc:'Start exploring your island.',coins:2},
+ {id:'sticker',emoji:'🎀',title:'Sticker collector',desc:'Find your first bonus sticker.',coins:3}
+];
+const decorData=[['🌷','Tulip'],['🍄','Mushroom'],['🌳','Tree'],['🪨','Sparkle rock'],['🦋','Butterfly'],['🌈','Rainbow'],['⭐','Wish star'],['🏡','Tiny cottage'],['🧚','Fairy'],['🍓','Giant strawberry']];
+const descriptions={'🐰':'A curious little friend with a big imagination.','🐱':'A tiny chaos gremlin with a very important nap schedule.','🐸':'A joyful jumper who thinks puddles are portals.','🦊':'A clever cutie with a secret plan.','🐻':'A cozy pal with the best imaginary hugs.','👾':'A glitchy oddball who makes boring things sparkle.','🦄':'A magical daydream with glitter in its pockets.'};
+function save(){try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}}
+function toast(t){$('toast').textContent=t;$('toast').style.display='block';clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>$('toast').style.display='none',2300)}
+function render(){
+ $('coins').textContent=s.coins;$('name').value=s.name;$('type').value=s.type;
+ $('emoji').textContent=s.type;$('pname').textContent=s.name;$('description').textContent=descriptions[s.type]||descriptions['🐰'];
+ $('preview').style.background=`linear-gradient(135deg,${s.color}55,#f1edff)`;
+ $('islandpal').textContent=s.type;
+ document.querySelectorAll('[data-color]').forEach(b=>b.classList.toggle('selected',b.dataset.color===s.color));
+ $('quests').innerHTML=questData.map(q=>{let done=s.done.includes(q.id);return `<div class="quest"><b>${done?'✅':q.emoji}</b><span><strong>${q.title}</strong><br><small>${done?'Quest complete':q.desc}</small></span><button class="${done?'soft':'mint'}" data-quest="${q.id}" ${done?'disabled':''}>${done?'Done':'+'+q.coins+' 🪙'}</button></div>`}).join('');
+ $('shop').innerHTML=decorData.map(([emoji,name])=>`<button data-decor="${emoji}" title="${name}">${emoji}</button>`).join('');
+ $('items').innerHTML=s.decor.map((e,i)=>`<span class="islanditem" style="left:${8+(i*23)%80}%;top:${48+(i*17)%37}%">${e}</span>`).join('');
+ $('stickers').innerHTML=['🍓','🌈','⭐','🍄','🦋','🎀','🌷','🧚','🏝️','💎','🪄','👑'].map(x=>`<span class="sticker ${s.stickers.includes(x)?'':'locked'}">${s.stickers.includes(x)?x:'❔'}</span>`).join('');
+ save();
+}
+function finish(id){
+ const q=questData.find(x=>x.id===id);if(!q||s.done.includes(id))return;
+ if(id==='name'&&!$('name').value.trim()){toast('Give your Oddling a name first!');return}
+ if(id==='decorate'&&!s.decor.length){toast('Add a decoration first! 🌷');return}
+ s.done.push(id);s.coins+=q.coins;
+ const prize={name:'🎀',decorate:'🏝️',explore:'🌈',sticker:'💎'}[id];
+ if(!s.stickers.includes(prize))s.stickers.push(prize);
+ render();toast(`Quest complete! +${q.coins} Berry Coins ✨`);
+}
+$('name').addEventListener('input',e=>{s.name=e.target.value.slice(0,18);$('pname').textContent=s.name||'Unnamed';save()});
+$('type').addEventListener('change',e=>{s.type=e.target.value;render()});
+document.querySelector('.colors').addEventListener('click',e=>{let b=e.target.closest('[data-color]');if(!b)return;s.color=b.dataset.color;render()});
+$('savepal').addEventListener('click',()=>{s.name=$('name').value.trim()||'Mochi Moon';s.type=$('type').value;s.done=s.done.filter(x=>x!=='name');render();finish('name');toast(`${s.name} says hello! ♡`)});
+$('quests').addEventListener('click',e=>{let b=e.target.closest('[data-quest]');if(b)finish(b.dataset.quest)});
+$('shop').addEventListener('click',e=>{let b=e.target.closest('[data-decor]');if(!b)return;if(s.coins<2){toast('Not enough coins! Complete a quest first 🪙');return}let item=b.dataset.decor;s.coins-=2;s.decor.push(item);if(item==='🍄'&&!s.stickers.includes('🍄'))s.stickers.push('🍄');render();$('shopmsg').textContent=`Added ${item} to your island!`;toast(`${item} added! −2 coins`)});
+$('clear').addEventListener('click',()=>{s.decor=[];render();toast('Island cleared 🌱')});
+$('savepal').addEventListener('click',()=>{s.name=$('name').value.trim()||'Mochi Moon';save()});
+render();
+if(!localStorage.getItem(KEY))toast('Welcome to Oddberry World! 🍓');
+</script>
+</body>
+</html>
