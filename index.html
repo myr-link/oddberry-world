@@ -1,93 +1,104 @@
-<!DOCTYPE html>
+from pathlib import Path
+import zipfile, os, textwrap
+
+out_dir = Path("/mnt/data/oddberry_world")
+out_dir.mkdir(parents=True, exist_ok=True)
+html = r'''<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Oddberry Online World 🍓✨</title>
-  <style>
-    :root {
-      --bg-color: #ffeef2;
-      --card-bg: #ffffff;
-      --primary: #ff6b8b;
-      --primary-hover: #ff4770;
-      --accent: #ffd166;
-      --text: #4a3e3d;
-      --border: #ffcad4;
-    }
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Oddberry World 🍓</title>
+<style>
+:root{--ink:#49375c;--pink:#ffb6d4;--cream:#fff9ee;--purple:#bda7ff;--mint:#b8f1d8;--berry:#ff5f91}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(135deg,#fff0f6,#f2edff 48%,#e4fff4);color:var(--ink);font-family:ui-rounded,"Trebuchet MS",system-ui,sans-serif}
+button,input,select{font:inherit}button{cursor:pointer;border:0;border-radius:14px;padding:10px 14px;background:#6f4bb8;color:white;font-weight:800;box-shadow:0 4px 0 #51328f;transition:transform .15s,filter .15s}button:hover{transform:translateY(-2px);filter:brightness(1.06)}button:active{transform:translateY(2px);box-shadow:0 2px 0 #51328f}.soft{background:#fff;color:#644c82;box-shadow:0 3px 0 #e3d6f5}.tiny{padding:7px 10px;font-size:.88rem}.app{max-width:1200px;margin:auto;padding:18px}.top{display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:14px}.logo{font-size:clamp(1.5rem,4vw,2.5rem);font-weight:1000;letter-spacing:-1px}.logo span{color:#f24f91}.stats{display:flex;gap:8px;flex-wrap:wrap}.pill{background:#fff;border:2px solid #f0dff7;border-radius:99px;padding:8px 12px;font-weight:900;box-shadow:0 3px 0 #eadcf5}.layout{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(280px,.85fr);gap:14px}.panel{background:#ffffffd9;border:2px solid #fff;border-radius:24px;box-shadow:0 8px 24px #6f4bb81a;padding:15px;min-width:0}.world-head{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}.world-head h2{margin:0}.world{position:relative;overflow:hidden;min-height:390px;border-radius:20px;border:3px solid #fff;outline:2px solid #e5d6ff;background:linear-gradient(#a7e9ff 0 43%,#c6f4b9 43% 100%);isolation:isolate}.sun{position:absolute;right:9%;top:7%;font-size:42px;animation:float 4s ease-in-out infinite}.cloud{position:absolute;font-size:45px;opacity:.8;animation:drift 20s linear infinite}.cloud.one{top:9%;left:10%}.cloud.two{top:19%;left:60%;animation-delay:-9s}.hill{position:absolute;bottom:20%;height:35%;width:65%;border-radius:50% 50% 0 0;background:#8fdda4;z-index:-1}.hill.h1{left:-9%;transform:rotate(-7deg)}.hill.h2{right:-13%;background:#a5e8b1;transform:rotate(8deg)}.path{position:absolute;left:35%;bottom:-14%;width:32%;height:60%;background:#f8dba5;border:4px solid #eac887;border-radius:48%;transform:rotate(12deg);z-index:-1}.flower{position:absolute;bottom:15%;font-size:25px;animation:sway 3s ease-in-out infinite}.tree{position:absolute;bottom:26%;font-size:64px;filter:drop-shadow(0 4px 0 #72bd87)}.place-label{position:absolute;top:8px;left:10px;background:#fff9;border-radius:10px;padding:5px 9px;font-weight:900;font-size:.8rem}.npc{position:absolute;display:flex;flex-direction:column;align-items:center;gap:0;transform:translate(-50%,-50%);background:transparent;box-shadow:none;padding:0;color:var(--ink);z-index:5;filter:drop-shadow(0 3px 0 #0001)}.npc .emoji{font-size:clamp(34px,5vw,52px);animation:bob 2.1s ease-in-out infinite}.npc .name{background:#fff;padding:3px 8px;border-radius:9px;font-size:.75rem;white-space:nowrap;box-shadow:0 2px 0 #eadcf5}.npc:hover .emoji{transform:scale(1.15)}.player{position:absolute;left:48%;top:67%;transform:translate(-50%,-50%);z-index:8;text-align:center;transition:left .14s linear,top .14s linear;pointer-events:none}.player .avatar{font-size:clamp(38px,5vw,56px);filter:drop-shadow(0 4px 0 #0002);animation:bob 1.4s ease-in-out infinite}.player .pname{background:#fff;border:2px solid #ffb6d4;padding:2px 7px;border-radius:9px;font-size:.75rem;font-weight:900;white-space:nowrap}.controls{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:12px;align-items:center}.dpad{display:grid;grid-template-columns:40px 40px 40px;grid-template-rows:36px 36px;gap:4px}.dpad button{padding:3px;border-radius:10px}.dpad .up{grid-column:2}.dpad .left{grid-column:1;grid-row:2}.dpad .down{grid-column:2;grid-row:2}.dpad .right{grid-column:3;grid-row:2}.side-title{display:flex;justify-content:space-between;align-items:center;margin:0 0 10px}.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 13px}.tab{background:#f2eaff;color:#694e90;box-shadow:none;padding:8px 10px}.tab.active{background:#6f4bb8;color:white;box-shadow:0 3px 0 #51328f}.view{display:none}.view.active{display:block}.field{display:grid;gap:5px;margin:10px 0;font-weight:800}.field input,.field select{width:100%;padding:9px;border:2px solid #e9dafa;border-radius:11px;background:white;color:var(--ink)}.choices{display:flex;gap:7px;flex-wrap:wrap}.swatch{width:30px;height:30px;padding:0;border-radius:50%;border:3px solid white;outline:2px solid #e5d6f5;box-shadow:none}.swatch.selected{outline:3px solid #6f4bb8}.card{background:#fff8ff;border:2px solid #f0e1fa;border-radius:15px;padding:11px;margin:8px 0}.npc-card{display:flex;gap:10px;align-items:center}.npc-face{font-size:36px}.muted{opacity:.75;font-size:.9rem}.dialogue{background:#fff7d9;border:2px solid #ffe7a0;border-radius:16px;padding:12px;margin:10px 0}.dialogue strong{display:block;margin-bottom:5px}.reply{display:block;width:100%;text-align:left;margin-top:7px;background:#fff;color:#624b7e;box-shadow:0 3px 0 #e7d9f3;border:1px solid #f0e4fa}.toast{position:fixed;left:50%;bottom:20px;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:#49375c;color:white;border-radius:99px;padding:12px 18px;font-weight:900;z-index:99;transition:.25s;max-width:90%;text-align:center}.toast.show{opacity:1;transform:translate(-50%,0)}.progress{height:9px;background:#eee1f6;border-radius:99px;overflow:hidden}.progress>div{height:100%;background:linear-gradient(90deg,#ff83b2,#a88bff);width:0;transition:width .3s}.game-area{position:relative;min-height:180px;background:#e5fff4;border-radius:16px;overflow:hidden;border:2px dashed #a5dfc8}.berry{position:absolute;border:0;background:transparent;box-shadow:none;font-size:30px;padding:0;animation:float 1.8s ease-in-out infinite}.memory{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.mem{padding:12px 0;background:#e8dcff;color:#60468d;box-shadow:0 3px 0 #c6b3ee;font-size:1.5rem}.mem.open{background:#fff}.inventory{display:flex;gap:7px;flex-wrap:wrap}.inv-item{background:#fff0f7;border-radius:12px;padding:8px}.footer{text-align:center;padding:16px 5px 4px;opacity:.7;font-size:.8rem}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}@keyframes float{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-10px) rotate(4deg)}}@keyframes drift{from{transform:translateX(-15px)}to{transform:translateX(50px)}}@keyframes sway{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(8deg)}}
+@media(max-width:820px){.layout{grid-template-columns:1fr}.world{min-height:350px}.app{padding:10px}.panel{padding:12px}}@media(max-width:420px){.world{min-height:330px}.tree{font-size:48px}.stats{width:100%}.pill{font-size:.85rem}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="top"><div><div class="logo">🍓 <span>Oddberry</span> World</div><div class="muted">A tiny world with BIG weird energy.</div></div><div class="stats"><div class="pill">🪙 <span id="coins">30</span> berries</div><div class="pill">⭐ Level <span id="level">1</span></div><div class="pill">📖 <span id="questCount">0</span>/4 quests</div></div></header>
+<div class="layout">
+<main class="panel">
+<div class="world-head"><h2>🌼 Berrybell Village</h2><span class="muted">Move with WASD / arrow keys</span></div>
+<div class="world" id="world" aria-label="Animated game world">
+<div class="place-label" id="placeLabel">📍 Village Square</div><div class="sun">☀️</div><div class="cloud one">☁️</div><div class="cloud two">☁️</div><div class="hill h1"></div><div class="hill h2"></div><div class="path"></div>
+<div class="tree" style="left:4%;bottom:25%">🌳</div><div class="tree" style="right:4%;bottom:26%">🌲</div><div class="tree" style="left:72%;bottom:20%;font-size:48px">🍄</div>
+<div class="flower" style="left:12%">🌷</div><div class="flower" style="left:23%;animation-delay:-1s">🌼</div><div class="flower" style="left:78%;animation-delay:-2s">🌸</div><div class="flower" style="left:88%">🌻</div>
+<button class="npc" style="left:26%;top:52%" data-npc="bibi"><span class="emoji">🐰</span><span class="name">Bibi</span></button>
+<button class="npc" style="left:69%;top:45%" data-npc="moss"><span class="emoji">🍄</span><span class="name">Moss</span></button>
+<button class="npc" style="left:53%;top:29%" data-npc="pip"><span class="emoji">🐸</span><span class="name">Pip</span></button>
+<button class="npc" style="left:82%;top:69%" data-npc="berry"><span class="emoji">🦊</span><span class="name">Berry</span></button>
+<div class="player" id="player"><div class="avatar" id="avatar">🧚🏻‍♀️</div><div class="pname" id="playerName">Berrybean</div></div>
+</div>
+<div class="controls"><div class="dpad"><button class="up soft" data-move="up">⬆️</button><button class="left soft" data-move="left">⬅️</button><button class="down soft" data-move="down">⬇️</button><button class="right soft" data-move="right">➡️</button></div><div class="choices"><button class="soft" id="exploreBtn">🧭 Explore</button><button class="soft" id="nearbyBtn">💬 Talk nearby</button><button id="questBtn">📜 Quests</button></div></div>
+<div class="muted" style="margin-top:8px">Tip: walk close to a character, then press “Talk nearby” — or click any NPC!</div>
+</main>
+<aside class="panel">
+<div class="side-title"><h2 style="margin:0">Your Adventure</h2><span id="mood">✨</span></div>
+<div class="tabs"><button class="tab active" data-tab="talk">💬 Chat</button><button class="tab" data-tab="create">🎨 Avatar</button><button class="tab" data-tab="games">🎮 Games</button><button class="tab" data-tab="quests">📜 Quests</button><button class="tab" data-tab="bag">🎒 Bag</button></div>
+<section class="view active" id="view-talk"><div id="chatIntro" class="dialogue"><strong>Welcome, little oddling! 🌟</strong>Everyone here is a little odd. That's the whole point. Click an NPC to meet them!</div><div id="dialogueBox"></div><div id="npcList"></div></section>
+<section class="view" id="view-create"><h3>Make your main character</h3><div class="field">Character name<input id="nameInput" maxlength="16" value="Berrybean" placeholder="Your cool name"></div><div class="field">Skin tone<div class="choices" id="skinChoices"></div></div><div class="field">Hair / head style<div class="choices" id="hairChoices"></div></div><div class="field">Outfit<div class="choices" id="outfitChoices"></div></div><div class="field">Magic aura<div class="choices" id="auraChoices"></div></div><div class="field">Personality<select id="personality"><option>Chaotic sunshine</option><option>Quiet mystery</option><option>Confident legend</option><option>Sleepy genius</option><option>Certified gremlin</option></select></div><button id="saveAvatar">✨ Save my character</button><div class="card"><b>Live preview</b><div style="font-size:54px;text-align:center" id="avatarPreview">🧚🏻‍♀️</div><div id="previewText" style="text-align:center;font-weight:900">Berrybean · Chaotic sunshine</div></div></section>
+<section class="view" id="view-games"><h3>🎮 Tiny games, BIG prizes</h3><div class="card"><b>🍓 Berry Bonanza</b><p class="muted">Tap berries as fast as you can for 12 seconds!</p><button id="startBerry">Start berry hunt</button><div id="berryStatus" class="muted" style="margin-top:8px">Ready? Go get 'em.</div><div class="game-area" id="berryField" style="margin-top:8px"></div></div><div class="card"><b>🧠 Oddling Memory</b><p class="muted">Find matching pairs. Finish for 12 berry coins!</p><button class="soft" id="startMemory">Start memory match</button><div id="memoryBoard" class="memory" style="margin-top:9px"></div><div id="memoryStatus" class="muted"></div></div><div class="card"><b>🔮 Moss's mystery</b><p>Which one is Moss's favourite snack?</p><div class="choices"><button class="soft tiny" data-guess="moon">🌙 Mooncakes</button><button class="soft tiny" data-guess="mushroom">🍄 Mushrooms</button><button class="soft tiny" data-guess="socks">🧦 Socks</button></div><div id="guessStatus" class="muted"></div></div></section>
+<section class="view" id="view-quests"><h3>📜 Village quests</h3><div id="questList"></div><div class="card"><b>Level progress</b><p class="muted">Earn coins and complete quests to level up.</p><div class="progress"><div id="xpBar"></div></div><div class="muted" id="xpText"></div></div></section>
+<section class="view" id="view-bag"><h3>🎒 Your collection</h3><div class="card"><b>Stickers</b><div class="inventory" id="stickers"></div></div><div class="card"><b>Collected things</b><div class="inventory" id="inventory"></div></div><button class="soft" id="resetBtn">↻ Reset save</button><p class="muted">Your progress saves in this browser on this device.</p></section>
+</aside></div><div class="footer">Made of berries, magic, and a suspicious amount of glitter ✨ · Oddberry World</div></div><div class="toast" id="toast"></div>
+<script>
+const $=id=>document.getElementById(id);
+const defaults={name:"Berrybean",skin:"🏻",hair:"🧚",outfit:"👗",aura:"✨",personality:"Chaotic sunshine",coins:30,xp:0,level:1,quests:{meet:false,game:false,mystery:false,explore:false},talks:{},stickers:["🌟 First Steps"],inventory:["🍓 Starter Berry"],x:48,y:67,place:0};
+let state;try{state={...defaults,...JSON.parse(localStorage.getItem("oddberry-save")||"{}")};state.quests={...defaults.quests,...(state.quests||{})};state.talks=state.talks||{};state.stickers=state.stickers||[];state.inventory=state.inventory||[]}catch(e){state={...defaults}}
+let selectedNpc=null, berryTimer=null, berryInterval=null, berryScore=0, memoryDeck=[], memoryOpen=[], memoryMatched=0, memoryLock=false, mysterySolved=false;
+const npcs={
+bibi:{name:"Bibi",emoji:"🐰",role:"The overly enthusiastic baker",hello:["HIII NEW PERSON!! Do you like muffins? I made 47. I ate 46. Don't ask.","Welcome!! I was going to bake a cake shaped like a turnip. Long story."],lines:[["I need a tiny favour!","Can you find 3 berries for my Very Important Muffin?","deal"],["What's your biggest dream?","Mine is to open a bakery where everything is shaped like frogs.","dream"],["Tell me a secret.","Sometimes I put sprinkles on soup. It makes soup feel fancy.","secret"]]},
+moss:{name:"Moss",emoji:"🍄",role:"A dramatic mushroom philosopher",hello:["Greetings, tiny traveller. I have been thinking about soup for six hours.","Do you ever stare at a leaf and wonder if it knows your name?"],lines:[["What's your favourite snack?","Mushrooms. Obviously. I am a mushroom. Please keep up.","snack"],["Can I have a quest?","Find the hidden sparkle of the village. (It may be a sticker. It may be a rock.)","quest"],["Are you always this dramatic?","I once watched a raindrop fall. Changed my life.","dramatic"]]},
+pip:{name:"Pip",emoji:"🐸",role:"A frog with absolutely no plan",hello:["RIBBIT. Sorry, that's my whole greeting. I'm Pip!","I have a plan! ...I forgot it. Anyway, hi."],lines:[["Teach me something.","If you say 'frog' three times, a frog may appear. I am legally not responsible.","learn"],["What are you doing?","Training for the Leaf Jump Olympics. The leaf is currently winning.","jump"],["Got any gossip?","The mayor is secretly three raccoons in a coat. Allegedly.","gossip"]]},
+berry:{name:"Berry",emoji:"🦊",role:"A fox who definitely isn't suspicious",hello:["Psst. You look like someone who can keep a secret. Can you?","Oh! A visitor! I was just standing here normally. Definitely normally."],lines:[["What's behind that tree?","Nothing! Just a totally normal secret passage. (Wink.)","passage"],["Can I trust you?","Absolutely. I only stole one royal cupcake. Allegedly.","trust"],["Do you have treasure?","Maybe. Bring me a shiny thing and I might remember where I put it.","treasure"]]}
+};
+const skins=["🏻","🏼","🏽","🏾","🏿"], hairs=["🧚","🧙","👑","🐱","🦊","🐸","🎩"], outfits=["👗","🥼","🧥","🥋","🦺","🩱"], auras=["✨","💖","🌈","🔥","❄️","🌙","💫"];
+function save(){localStorage.setItem("oddberry-save",JSON.stringify(state))}
+function toast(s){const t=$("toast");t.textContent=s;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2200)}
+function render(){ $("coins").textContent=state.coins;$("level").textContent=state.level;$("questCount").textContent=Object.values(state.quests).filter(Boolean).length;$("playerName").textContent=state.name;$("avatar").textContent=state.hair+state.skin;$("avatarPreview").textContent=state.hair+state.skin+state.outfit+state.aura;$("previewText").textContent=state.name+" · "+state.personality;$("nameInput").value=state.name;$("personality").value=state.personality;$("player").style.left=state.x+"%";$("player").style.top=state.y+"%";$("placeLabel").textContent=["📍 Village Square","📍 Whispering Woods","📍 Sparkle Pond"][state.place];$("mood").textContent=state.aura;renderQuests();renderBag();save()}
+function addXp(n){state.xp+=n;let newLevel=Math.floor(state.xp/30)+1;if(newLevel>state.level){state.level=newLevel;state.coins+=10;toast("LEVEL UP!! You're level "+newLevel+"! +10 coins 🎉")}render()}
+function completeQuest(key,reward,msg){if(!state.quests[key]){state.quests[key]=true;state.coins+=reward;state.stickers.push(["meet","game","mystery","explore"].indexOf(key)===0?"💬 Chat Champion":["game"].includes(key)?"🎮 Game Goblin":["mystery"].includes(key)?"🔮 Mystery Solver":"🧭 Explorer");addXp(10);toast(msg+" +"+reward+" coins!");render()}}
+function setTab(name){document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("active",b.dataset.tab===name));document.querySelectorAll(".view").forEach(v=>v.classList.toggle("active",v.id==="view-"+name))}
+document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>setTab(b.dataset.tab));
+function choices(id,arr,field){$(id).innerHTML="";arr.forEach(v=>{let b=document.createElement("button");b.className="swatch"+(state[field]===v?" selected":"");b.textContent=v;b.title=v;b.onclick=()=>{state[field]=v;choices(id,arr,field);$("avatarPreview").textContent=state.hair+state.skin+state.outfit+state.aura;$("previewText").textContent=state.name+" · "+state.personality};$(id).append(b)})}
+choices("skinChoices",skins,"skin");choices("hairChoices",hairs,"hair");choices("outfitChoices",outfits,"outfit");choices("auraChoices",auras,"aura");
+$("nameInput").oninput=e=>{state.name=e.target.value.slice(0,16)||"Oddling";$("avatarPreview").textContent=state.hair+state.skin+state.outfit+state.aura;$("previewText").textContent=state.name+" · "+state.personality};
+$("personality").onchange=e=>{state.personality=e.target.value;$("previewText").textContent=state.name+" · "+state.personality};
+$("saveAvatar").onclick=()=>{state.name=$("nameInput").value.trim().slice(0,16)||"Oddling";state.personality=$("personality").value;render();toast("Your oddling has entered the chat ✨");setTab("talk")};
+function openNpc(id){selectedNpc=id;const n=npcs[id];$("chatIntro").style.display="none";$("dialogueBox").innerHTML=`<div class="dialogue"><strong>${n.emoji} ${n.name} · ${n.role}</strong>${(state.talks[id]||0)===0?n.hello[0]:n.hello[1]}<div class="muted" style="margin-top:5px">Your personality: ${state.personality}</div></div>`;let box=$("dialogueBox");n.lines.forEach(([label,response,key])=>{let b=document.createElement("button");b.className="reply";b.textContent="💬 "+label;b.onclick=()=>replyNpc(id,response,key);box.append(b)});if(id==="moss"&&!mysterySolved){let b=document.createElement("button");b.className="reply";b.textContent="🔮 Guess Moss's favourite snack";b.onclick=()=>{setTab("games");$("guessStatus").textContent="Pick the answer!";};box.append(b)}$("npcList").innerHTML=`<div class="muted">Tip: ${n.name} may have something new to say next time.</div>`;state.talks[id]=(state.talks[id]||0)+1;completeQuest("meet",8,"First friend made!");render();setTab("talk")}
+function replyNpc(id,response,key){const n=npcs[id];$("dialogueBox").innerHTML=`<div class="dialogue"><strong>${n.emoji} ${n.name} says...</strong>${response}<p class="muted">You: ${state.personality==="Certified gremlin"?"*does something suspicious*":"*nods thoughtfully*"}</p></div><button class="reply" id="again">↩ Keep chatting</button><button class="reply" id="bye">👋 See you later</button>`;$("again").onclick=()=>openNpc(id);$("bye").onclick=()=>{$("dialogueBox").innerHTML=`<div class="dialogue"><strong>${n.emoji} ${n.name}</strong>Bye, ${state.name}! Try not to get adopted by a bush.</div>`};if(key==="quest"||key==="passage"||key==="treasure"){if(!state.inventory.includes("✨ Suspicious Sparkle"))state.inventory.push("✨ Suspicious Sparkle")}render()}
+document.querySelectorAll(".npc").forEach(b=>b.onclick=()=>openNpc(b.dataset.npc));
+function move(dir){let step=5;if(dir==="up")state.y=Math.max(15,state.y-step);if(dir==="down")state.y=Math.min(87,state.y+step);if(dir==="left")state.x=Math.max(5,state.x-step);if(dir==="right")state.x=Math.min(95,state.x+step);render();checkNear()}
+document.querySelectorAll("[data-move]").forEach(b=>b.onclick=()=>move(b.dataset.move));
+document.addEventListener("keydown",e=>{if(["INPUT","SELECT","TEXTAREA"].includes(document.activeElement.tagName))return;const k=e.key.toLowerCase();if(["arrowup","w"].includes(k)){e.preventDefault();move("up")}if(["arrowdown","s"].includes(k)){e.preventDefault();move("down")}if(["arrowleft","a"].includes(k)){e.preventDefault();move("left")}if(["arrowright","d"].includes(k)){e.preventDefault();move("right")}});
+function checkNear(){let nearest=null,dist=100;document.querySelectorAll(".npc").forEach(b=>{let x=parseFloat(b.style.left),y=parseFloat(b.style.top),d=Math.hypot(x-state.x,y-state.y);if(d<dist){dist=d;nearest=b.dataset.npc}});if(dist<17){$("nearbyBtn").textContent="💬 Talk to "+npcs[nearest].name;$("nearbyBtn").onclick=()=>openNpc(nearest)}else{$("nearbyBtn").textContent="💬 Talk nearby";$("nearbyBtn").onclick=()=>toast("Walk closer to an NPC first! 👣")}}
+$("exploreBtn").onclick=()=>{state.place=(state.place+1)%3;if(state.place===1){$("world").style.background="linear-gradient(#a7e9ff 0 43%,#a6dfaa 43% 100%)";document.querySelectorAll(".tree").forEach(t=>t.textContent="🌲")}else if(state.place===2){$("world").style.background="linear-gradient(#b4edff 0 43%,#b6f4d4 43% 100%)";document.querySelectorAll(".tree").forEach(t=>t.textContent="🌴")}else{$("world").style.background="linear-gradient(#a7e9ff 0 43%,#c6f4b9 43% 100%)";document.querySelectorAll(".tree").forEach((t,i)=>t.textContent=i===1?"🌲":"🌳")}state.x=48;state.y=67;completeQuest("explore",10,"New places discovered!");if(state.place===1)toast("Whispering Woods! The trees are gossiping 🌲");else if(state.place===2)toast("Sparkle Pond! Something shiny swims by ✨");else toast("Back to Berrybell Village!");render()};
+$("questBtn").onclick=()=>setTab("quests");
+const questInfo=[["meet","💬 Say hi to any NPC","Talk to a village character.",8],["game","🍓 Play a mini-game","Finish Berry Bonanza or Memory Match.",12],["mystery","🔮 Solve Moss's mystery","Guess Moss's favourite snack.",10],["explore","🧭 Explore somewhere new","Visit the woods or sparkle pond.",10]];
+function renderQuests(){$("questList").innerHTML=questInfo.map(([key,title,desc,reward])=>`<div class="card"><b>${state.quests[key]?"✅":title}</b><div class="muted">${desc}</div><div style="margin-top:6px;font-weight:800">${state.quests[key]?"Completed":"Reward: 🪙 "+reward}</div></div>`).join("");$("xpBar").style.width=(state.xp%30/30*100)+"%";$("xpText").textContent=state.xp%30+" / 30 XP to next level"}
+function renderBag(){$("stickers").innerHTML=state.stickers.map(s=>`<span class="inv-item">${s}</span>`).join("")||"No stickers yet — go be iconic."; $("inventory").innerHTML=state.inventory.map(s=>`<span class="inv-item">${s}</span>`).join("")||"Empty bag!"}
+function endBerry(){clearInterval(berryInterval);clearTimeout(berryTimer);berryInterval=null;$("berryField").innerHTML="";$("berryStatus").textContent=`Time! You caught ${berryScore} berries!`;if(berryScore>0){state.coins+=Math.max(3,berryScore);state.inventory.push("🍓 Berry x"+berryScore);completeQuest("game",12,"Game quest complete!");addXp(berryScore);render()}toast("Berry hunt complete! 🍓")}
+function spawnBerry(){const field=$("berryField");if(!berryInterval)return;let b=document.createElement("button");b.className="berry";b.textContent=["🍓","🫐","🍒","✨"][Math.floor(Math.random()*4)];b.style.left=Math.random()*84+"%";b.style.top=Math.random()*68+"%";b.onclick=()=>{berryScore++;$("berryStatus").textContent="Caught: "+berryScore+" 🍓";b.remove()};field.append(b);setTimeout(()=>b.remove(),1500)}
+$("startBerry").onclick=()=>{if(berryInterval)return;berryScore=0;$("berryField").innerHTML="";$("berryStatus").textContent="GO GO GO! CATCH THE BERRIES!";berryInterval=setInterval(spawnBerry,420);berryTimer=setTimeout(endBerry,12000);spawnBerry()};
+const memoryIcons=["🍓","🫐","🐸","🍄","🌷","🦊","🌙","⭐"];
+$("startMemory").onclick=()=>{memoryDeck=[...memoryIcons,...memoryIcons].sort(()=>Math.random()-.5);memoryOpen=[];memoryMatched=0;memoryLock=false;$("memoryStatus").textContent="Find all 8 pairs!";drawMemory()};
+function drawMemory(){const board=$("memoryBoard");board.innerHTML="";memoryDeck.forEach((v,i)=>{let b=document.createElement("button");b.className="mem";b.textContent=memoryMatchedCards.has(i)||memoryOpen.includes(i)?v:"❔";b.onclick=()=>flipMemory(i);board.append(b)})}
+let memoryMatchedCards=new Set();
+function flipMemory(i){if(memoryLock||memoryMatchedCards.has(i)||memoryOpen.includes(i)||!memoryDeck.length)return;memoryOpen.push(i);drawMemory();if(memoryOpen.length===2){memoryLock=true;let [a,b]=memoryOpen;if(memoryDeck[a]===memoryDeck[b]){memoryMatchedCards.add(a);memoryMatchedCards.add(b);memoryMatched+=2;memoryOpen=[];memoryLock=false;drawMemory();if(memoryMatched===16){$("memoryStatus").textContent="YOU DID IT! +12 berry coins!";state.coins+=12;state.inventory.push("🧠 Memory Master");completeQuest("game",12,"Memory quest complete!");addXp(12);render()}}else setTimeout(()=>{memoryOpen=[];memoryLock=false;drawMemory()},700)}}
+document.querySelectorAll("[data-guess]").forEach(b=>b.onclick=()=>{if(b.dataset.guess==="mushroom"){if(!mysterySolved){mysterySolved=true;state.coins+=10;state.inventory.push("🍄 Moss's trust");completeQuest("mystery",10,"Mystery solved!");addXp(10)}$("guessStatus").textContent="Correct!! Moss whispers: 'You understand me.' 🍄";}else $("guessStatus").textContent="Nope! Moss looks personally offended. Try again 😭";render()});
+$("resetBtn").onclick=()=>{if(confirm("Reset your Oddberry save on this browser?")){localStorage.removeItem("oddberry-save");location.reload()}};
+render();checkNear();document.querySelectorAll(".flower").forEach((f,i)=>f.style.animationDelay=(-i*.6)+"s");
+</script>
+</body></html>'''
+(out_dir/"index.html").write_text(html, encoding="utf-8")
+zip_path = Path("/mnt/data/oddberry-world.zip")
+with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as z:
+    z.write(out_dir/"index.html", arcname="index.html")
+print("Created:", out_dir/"index.html", "and", zip_path, "bytes:", (out_dir/"index.html").stat().st_size)
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Fredoka', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      user-select: none;
-    }
-
-    body {
-      background-color: var(--bg-color);
-      color: var(--text);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      padding: 20px;
-    }
-
-    /* Modal / Customizer Overlay */
-    #creator-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(255, 238, 242, 0.95);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 100;
-    }
-
-    .creator-card {
-      background: var(--card-bg);
-      border: 4px solid var(--border);
-      border-radius: 24px;
-      padding: 30px;
-      width: 360px;
-      text-align: center;
-      box-shadow: 0 10px 25px rgba(255, 107, 139, 0.2);
-    }
-
-    .creator-card h1 {
-      color: var(--primary);
-      margin-bottom: 8px;
-    }
-
-    .creator-card p {
-      font-size: 0.9rem;
-      margin-bottom: 20px;
-      color: #7d6b6d;
-    }
-
-    .avatar-preview {
-      width: 120px;
-      height: 120px;
-      margin: 0 auto 20px;
-      border-radius: 50%;
-      background: #fff0f3;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: 3px dashed var(--border);
-      position: relative;
-    }
-
-    .oddling-sprite {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      position: relative;
-      transition
-
+      
 
  
